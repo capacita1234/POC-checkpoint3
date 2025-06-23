@@ -1,4 +1,4 @@
-//
+
 //  ShoppingViewModel.swift
 //  ois.equipe24
 //
@@ -8,11 +8,12 @@
 import SwiftUI
 
 
-struct ShoppingIdentifiable{
+struct ShoppingIdentifiable {
     let id = UUID()
     var name: String
     var category: String
-    }
+}
+
 class ShoppingViewModel: ObservableObject{
     @Published var items: [ShoppingIdentifiable]
     @Published var newItemName = " "
@@ -29,26 +30,27 @@ class ShoppingViewModel: ObservableObject{
             "Limpeza": ["sabão", "detergente", "desinfetante", "esponja"],
             "Higiennte": ["pasta", "escova", "shapoo", "sabonete"]
         ]
-        
-        func addItem(){
-            let nameLower = newItemName.lowercased()
-            var assignedCategory = "Outros"
-            for(category, keywords) in automaticCategories{
-                if keywords.contains(where: {nameLower.contains($0)}){
-                    assignedCategory = category
-                    break
-                }
+    }
+    
+    func addItem(){
+        let nameLower = newItemName.lowercased()
+        var assignedCategory = "Outros"
+        for(category, keywords) in automaticCategories{
+            if keywords.contains(where: {nameLower.contains($0)}){
+                assignedCategory = category
+                break
             }
-            if !customCategory.isEmpty{
-                assignedCategory = customCategory
-            }
-            let newItem = ShoppingIdentifiable(name: newItemName, category: assignedCategory)
-            items.append(newItem)
-            newItemName = " "
-            customCategory = " "
         }
-        func groupedItems() -> [String: [ShoppingIdentifiable]]{
-            Dictionary(grouping: items, by: {$0.category})
+        if !customCategory.isEmpty{
+            assignedCategory = customCategory
         }
+        let newItem = ShoppingIdentifiable(name: newItemName, category: assignedCategory)
+        items.append(newItem)
+        newItemName = " "
+        customCategory = " "
+    }
+    
+    func groupedItems() -> [String: [ShoppingIdentifiable]]{
+        Dictionary(grouping: items, by: {$0.category})
     }
 }
